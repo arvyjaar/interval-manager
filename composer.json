@@ -1,0 +1,40 @@
+{
+  "name": "arvyjaar/interval-manager",
+  "description": "Library for operations on intervals",
+  "keywords": [
+    "interval",
+    "sets",
+    "subtract",
+    "union"
+  ],
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Laurynas Valenta",
+      "email": "laurynas.valenta@nfq.lt"
+    },
+    {
+      "name": "Arvydas Jankauskas",
+      "email": "arvydas.jankauskas@nfq.lt"
+    }
+  ],
+  "require": {
+    "php": ">=7.4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": ">=8.5",
+    "phpstan/phpstan": "^1.4",
+    "friendsofphp/php-cs-fixer": "^3.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Jaar\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Jaar\\Test\\": "test"
+    }
+  }
+}
