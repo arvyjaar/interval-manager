@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jaar\IntervalUtils\Model;
+namespace Jaar\IntervalManager\Model;
 
 use InvalidArgumentException;
 

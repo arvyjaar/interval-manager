@@ -2,24 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Jaar\IntervalUtils\SetOperation;
+namespace Jaar\IntervalManager\Operation;
 
-use Jaar\IntervalUtils\Model\Interval;
-use Jaar\IntervalUtils\Model\IntervalCollection;
-use Jaar\IntervalUtils\Model\Point;
-use Jaar\IntervalUtils\Model\ValueInterface;
-use Jaar\IntervalUtils\SetOperationInterface;
+use Jaar\IntervalManager\Model\Interval;
+use Jaar\IntervalManager\Model\IntervalCollection;
+use Jaar\IntervalManager\Model\Point;
 
-class SubtractOperation extends AbstractOperation implements SetOperationInterface
+class SubtractBinaryOperation extends AbstractBinaryOperation implements BinarySetOperationInterface
 {
     public function execute(IntervalCollection $intervals1, IntervalCollection $intervals2): IntervalCollection
     {
-        $this->validateCollection($intervals1);
-        $this->validateCollection($intervals2);
+        $this->setValidator->validateCollection($intervals1);
+        $this->setValidator->validateCollection($intervals2);
 
-        $intervalPoints = $this->composeIntervalPoints($intervals1, $intervals2);
-
-        usort($intervalPoints, [$this, 'comparePoints']);
+        $intervalPoints = $this->collectIntervalPoints($intervals1, $intervals2);
 
         $beginningOfResultInterval     = null;
         $beginningOfSubtrahendInterval = null;
@@ -80,6 +76,19 @@ class SubtractOperation extends AbstractOperation implements SetOperationInterfa
         return $beginningOfResultInterval === null;
     }
 
+    private function isTheEndOfResultInterval(
+        Point          $point,
+        ?Point         $beginningOfTheInterval,
+        IntervalCollection $intervals1,
+        IntervalCollection $intervals2
+    ): bool {
+        if ($beginningOfTheInterval !== null && $point->isEndPoint() && $point->getCollection() === $intervals1) {
+            return true;
+        }
+
+        return $point->isBeginningPoint() && $beginningOfTheInterval !== null && $point->getCollection() === $intervals2;
+    }
+
     private function isNewBeginningPointExclusive(Point $point, ?Point $nextPoint, IntervalCollection $intervals2): bool
     {
         if ($nextPoint === null) {
@@ -97,21 +106,8 @@ class SubtractOperation extends AbstractOperation implements SetOperationInterfa
         return $point->isInclusive();
     }
 
-    private function isTheEndOfResultInterval(
-        Point          $point,
-        ?Point         $beginningOfTheInterval,
-        IntervalCollection $intervals1,
-        IntervalCollection $intervals2
-    ): bool {
-        if ($beginningOfTheInterval !== null && $point->isEndPoint() && $point->getCollection() === $intervals1) {
-            return true;
-        }
-
-        return $point->isBeginningPoint() && $beginningOfTheInterval !== null && $point->getCollection() === $intervals2;
-    }
-
     private function calculateIntervalInclusiveness(
-        ?Point         $beginningOfTheInterval,
+        Point         $beginningOfTheInterval,
         Point          $endOfTheInterval,
         ?Point         $nextPoint,
         IntervalCollection $intervals1,
@@ -119,15 +115,13 @@ class SubtractOperation extends AbstractOperation implements SetOperationInterfa
     ): int {
         $result = 0;
 
-        if ($beginningOfTheInterval !== null) {
-            if ($beginningOfTheInterval->isInclusive() && $beginningOfTheInterval->getCollection() === $intervals1) {
-                $result |= Interval::INCLUSIVE_BEGINNING;
-            }
+        if ($beginningOfTheInterval->isInclusive() && $beginningOfTheInterval->getCollection() === $intervals1) {
+            $result |= Interval::INCLUSIVE_BEGINNING;
+        }
 
-            if ($beginningOfTheInterval->getCollection() === $intervals2) {
-                if ($beginningOfTheInterval->isInclusive() === false) {
-                    $result |= Interval::INCLUSIVE_BEGINNING;
-                }
+        if ($beginningOfTheInterval->getCollection() === $intervals2) {
+            if ($beginningOfTheInterval->isInclusive() === false) {
+                $result |= Interval::INCLUSIVE_BEGINNING;
             }
         }
 

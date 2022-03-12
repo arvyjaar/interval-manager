@@ -2,55 +2,38 @@
 
 declare(strict_types=1);
 
-namespace Jaar\Test\IntervalUtils\SetOperation;
+namespace Jaar\Test\IntervalManager;
 
 use DateTime;
 use InvalidArgumentException;
-use Jaar\IntervalUtils\Model\Interval;
-use Jaar\IntervalUtils\Model\IntervalCollection;
-use Jaar\IntervalUtils\Model\Value\CICharacterValue;
-use Jaar\IntervalUtils\Model\Value\DateTimeValue;
-use Jaar\IntervalUtils\SetOperation\SubtractOperation;
-use Jaar\IntervalUtils\SetOperation\UnionOperation;
+use Jaar\IntervalManager\Model\Interval;
+use Jaar\IntervalManager\Model\IntervalCollection;
+use Jaar\IntervalManager\Model\Value\CICharacterValue;
+use Jaar\IntervalManager\Model\Value\DateTimeValue;
+use Jaar\IntervalManager\SetValidator;
 use PHPUnit\Framework\TestCase;
 
-class ValidatorTest extends TestCase
+class SetValidatorTest extends TestCase
 {
-    protected SubtractOperation $subtractOperation;
-    protected UnionOperation $unionOperation;
+    protected SetValidator $setValidator;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->subtractOperation = new SubtractOperation();
-        $this->unionOperation = new UnionOperation();
+        $this->setValidator = new SetValidator();
     }
 
     /**
      * @dataProvider validationKicksInIfInputIntervalsOverlapProvider
      */
     public function testSubtractInputValidationWhenIntervalsOverlap(
-        IntervalCollection $interval1,
-        IntervalCollection $interval2
+        IntervalCollection $interval1
     ): void {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Input intervals overlap!');
 
-        $this->subtractOperation->execute($interval1, $interval2);
-    }
-
-    /**
-     * @dataProvider validationKicksInIfInputIntervalsOverlapProvider
-     */
-    public function testUnionInputValidationWhenIntervalsOverlap(
-        IntervalCollection $interval1,
-        IntervalCollection $interval2
-    ): void {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Input intervals overlap!');
-
-        $this->subtractOperation->execute($interval1, $interval2);
+        $this->setValidator->validateCollection($interval1);
     }
 
     /**
@@ -58,7 +41,7 @@ class ValidatorTest extends TestCase
      */
     public function validationKicksInIfInputIntervalsOverlapProvider(): iterable
     {
-        $interval1 = new IntervalCollection(
+        $collection = new IntervalCollection(
             new Interval(
                 new DateTimeValue((new DateTime('2021-12-08'))->setTime(0, 0)),
                 new DateTimeValue((new DateTime('2021-12-08'))->setTime(10, 0)),
@@ -70,13 +53,11 @@ class ValidatorTest extends TestCase
                 0
             )
         );
-        $interval2 = new IntervalCollection();
 
-        yield [$interval1, $interval2];
-        yield [$interval2, $interval1];
+        yield [$collection];
 
 
-        $interval1 = new IntervalCollection(
+        $collection = new IntervalCollection(
             new Interval(
                 new DateTimeValue((new DateTime('2021-12-08'))->setTime(0, 0)),
                 new DateTimeValue((new DateTime('2021-12-08'))->setTime(10, 0)),
@@ -88,13 +69,11 @@ class ValidatorTest extends TestCase
                 0
             )
         );
-        $interval2 = new IntervalCollection();
 
-        yield [$interval1, $interval2];
-        yield [$interval2, $interval1];
+        yield [$collection];
 
 
-        $interval1 = new IntervalCollection(
+        $collection = new IntervalCollection(
             new Interval(
                 new DateTimeValue((new DateTime('2021-12-08'))->setTime(0, 0)),
                 new DateTimeValue((new DateTime('2021-12-08'))->setTime(10, 0)),
@@ -106,13 +85,11 @@ class ValidatorTest extends TestCase
                 0
             )
         );
-        $interval2 = new IntervalCollection();
 
-        yield [$interval1, $interval2];
-        yield [$interval2, $interval1];
+        yield [$collection];
 
 
-        $interval1 = new IntervalCollection(
+        $collection = new IntervalCollection(
             new Interval(
                 new CICharacterValue('A'),
                 new CICharacterValue('C'),
@@ -124,9 +101,7 @@ class ValidatorTest extends TestCase
                 Interval::INCLUSIVE_BEGINNING
             )
         );
-        $interval2 = new IntervalCollection();
 
-        yield [$interval1, $interval2];
-        yield [$interval2, $interval1];
+        yield [$collection];
     }
 }

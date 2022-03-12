@@ -2,25 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Jaar\IntervalUtils\SetOperation;
+namespace Jaar\IntervalManager\Operation;
 
-use Jaar\IntervalUtils\Model\Interval;
-use Jaar\IntervalUtils\Model\IntervalCollection;
-use Jaar\IntervalUtils\Model\Point;
-use Jaar\IntervalUtils\SetOperationInterface;
+use Jaar\IntervalManager\Model\Interval;
+use Jaar\IntervalManager\Model\IntervalCollection;
+use Jaar\IntervalManager\Model\Point;
 
-class UnionOperation extends AbstractOperation implements SetOperationInterface
+class UnionBinaryOperation extends AbstractBinaryOperation implements BinarySetOperationInterface
 {
     public function execute(
         IntervalCollection $intervals1,
         IntervalCollection $intervals2
     ): IntervalCollection {
-        $this->validateCollection($intervals1);
-        $this->validateCollection($intervals2);
+        $this->setValidator->validateCollection($intervals1);
+        $this->setValidator->validateCollection($intervals2);
 
-        $intervalPoints = $this->composeIntervalPoints($intervals1, $intervals2);
-
-        usort($intervalPoints, [$this, 'comparePoints']);
+        $intervalPoints = $this->collectIntervalPoints($intervals1, $intervals2);
 
         $beginningOfTheInterval = null;
         $started                = 0;

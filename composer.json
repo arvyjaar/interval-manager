@@ -29,12 +29,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Jaar\\": "src"
+      "Jaar\\IntervalManager\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Jaar\\Test\\": "test"
+      "Jaar\\Test\\IntervalManager\\": "test"
     }
   }
 }

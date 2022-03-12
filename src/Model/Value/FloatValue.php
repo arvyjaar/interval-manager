@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Jaar\IntervalUtils\Model\Value;
+namespace Jaar\IntervalManager\Model\Value;
 
 use InvalidArgumentException;
-use Jaar\IntervalUtils\Model\ValueInterface;
+use Jaar\IntervalManager\Model\ValueInterface;
 
 class FloatValue implements ValueInterface
 {

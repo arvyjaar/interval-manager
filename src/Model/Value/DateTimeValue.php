@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Jaar\IntervalUtils\Model\Value;
+namespace Jaar\IntervalManager\Model\Value;
 
 use DateTimeInterface;
 use InvalidArgumentException;
-use Jaar\IntervalUtils\Model\ValueInterface;
+use Jaar\IntervalManager\Model\ValueInterface;
 
 class DateTimeValue implements ValueInterface
 {

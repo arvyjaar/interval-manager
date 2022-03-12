@@ -2,27 +2,50 @@
 
 declare(strict_types=1);
 
-namespace Jaar\Test\IntervalUtils\SetOperation;
+namespace Jaar\Test\IntervalManager\Operation;
 
-use Jaar\IntervalUtils\Model\Value\CICharacterValue;
-use Jaar\IntervalUtils\Model\Value\DateTimeValue;
-use Jaar\IntervalUtils\Model\Interval;
-use Jaar\IntervalUtils\Model\IntervalCollection;
-use Jaar\IntervalUtils\Model\Value\FloatValue;
-use Jaar\IntervalUtils\Model\Value\IntegerValue;
-use Jaar\IntervalUtils\SetOperation\UnionOperation;
 use DateTime;
+use InvalidArgumentException;
+use Jaar\IntervalManager\Model\Interval;
+use Jaar\IntervalManager\Model\IntervalCollection;
+use Jaar\IntervalManager\Model\Value\CICharacterValue;
+use Jaar\IntervalManager\Model\Value\DateTimeValue;
+use Jaar\IntervalManager\Model\Value\FloatValue;
+use Jaar\IntervalManager\Model\Value\IntegerValue;
+use Jaar\IntervalManager\Operation\UnionBinaryOperation;
+use Jaar\IntervalManager\SetValidator;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class UnionOperationTest extends TestCase
 {
-    protected UnionOperation $unionOperation;
+    /**
+     * @var SetValidator|MockObject
+     */
+    protected SetValidator $validator;
+    protected UnionBinaryOperation $unionOperation;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->unionOperation = new UnionOperation();
+        $this->validator = $this->getMockBuilder(SetValidator::class)->getMock();
+        $this->unionOperation = new UnionBinaryOperation($this->validator);
+    }
+
+    /**
+     * @test
+     */
+    public function validatorExceptionBubblesUp(): void
+    {
+        $this->expectExceptionObject(new InvalidArgumentException());
+
+        $this->validator->expects($this->any())
+            ->method('validateCollection')
+            ->with(new IntervalCollection())
+            ->willThrowException(new InvalidArgumentException());
+
+        $this->unionOperation->execute(new IntervalCollection(), new IntervalCollection());
     }
 
     /**

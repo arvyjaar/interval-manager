@@ -1,6 +1,6 @@
 <?php
 
-namespace Jaar\IntervalUtils\Model;
+namespace Jaar\IntervalManager\Model;
 
 class Interval
 {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Jaar\IntervalUtils;
+namespace Jaar\IntervalManager\Operation;
 
-use Jaar\IntervalUtils\Model\IntervalCollection;
 use InvalidArgumentException;
+use Jaar\IntervalManager\Model\IntervalCollection;
 
-interface SetOperationInterface
+interface BinarySetOperationInterface
 {
     /**
      * @throws InvalidArgumentException
