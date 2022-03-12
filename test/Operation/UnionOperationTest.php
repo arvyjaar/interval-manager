@@ -19,10 +19,7 @@ use PHPUnit\Framework\TestCase;
 
 class UnionOperationTest extends TestCase
 {
-    /**
-     * @var SetValidator|MockObject
-     */
-    protected SetValidator $validator;
+    protected MockObject $validator;
     protected UnionBinaryOperation $unionOperation;
 
     public function setUp(): void

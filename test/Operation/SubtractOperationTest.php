@@ -19,10 +19,7 @@ use PHPUnit\Framework\TestCase;
 
 class SubtractOperationTest extends TestCase
 {
-    /**
-     * @var SetValidator|MockObject
-     */
-    protected SetValidator $validator;
+    protected MockObject $validator;
     protected SubtractBinaryOperation $subtractOperation;
 
     public function setUp(): void
