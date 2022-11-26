@@ -12,7 +12,7 @@ use Jaar\IntervalManager\Model\Value\CICharacterValue;
 use Jaar\IntervalManager\Model\Value\DateTimeValue;
 use Jaar\IntervalManager\Model\Value\FloatValue;
 use Jaar\IntervalManager\Model\Value\IntegerValue;
-use Jaar\IntervalManager\Operation\UnionBinaryOperation;
+use Jaar\IntervalManager\Operation\UnionOperation;
 use Jaar\IntervalManager\SetValidator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -20,14 +20,14 @@ use PHPUnit\Framework\TestCase;
 class UnionOperationTest extends TestCase
 {
     protected MockObject $validator;
-    protected UnionBinaryOperation $unionOperation;
+    protected UnionOperation $unionOperation;
 
     public function setUp(): void
     {
         parent::setUp();
 
         $this->validator = $this->getMockBuilder(SetValidator::class)->getMock();
-        $this->unionOperation = new UnionBinaryOperation($this->validator);
+        $this->unionOperation = new UnionOperation($this->validator);
     }
 
     /**
@@ -87,7 +87,7 @@ class UnionOperationTest extends TestCase
     /**
      * @return iterable<IntervalCollection[]>
      */
-    public function unionNonOverlappingProvider(): iterable
+    public static function unionNonOverlappingProvider(): iterable
     {
         /**
          * X-----X
@@ -220,7 +220,7 @@ class UnionOperationTest extends TestCase
     /**
      * @return iterable<IntervalCollection[]>
      */
-    public function unionOverlappingProvider(): iterable
+    public static function unionOverlappingProvider(): iterable
     {
         /**
          * X-----------X
@@ -315,7 +315,7 @@ class UnionOperationTest extends TestCase
     /**
      * @return iterable<IntervalCollection[]>
      */
-    public function unionFullyCoveringProvider(): iterable
+    public static function unionFullyCoveringProvider(): iterable
     {
         /**
          * X-------------X

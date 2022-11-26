@@ -9,33 +9,25 @@ use Jaar\IntervalManager\Model\ValueInterface;
 
 class IntegerValue implements ValueInterface
 {
-    private int $int;
-
-    public function __construct(int $int)
+    public function __construct(private readonly int $integer)
     {
-        $this->int = $int;
     }
 
     public function isGreaterThan(ValueInterface $value): bool
     {
-        if (!$value instanceof IntegerValue) {
+        if (!$value instanceof self) {
             throw new InvalidArgumentException();
         }
 
-        return $this->int > $value->getInt();
+        return $this->integer > $value->integer;
     }
 
     public function isLessThan(ValueInterface $value): bool
     {
-        if (!$value instanceof IntegerValue) {
+        if (!$value instanceof self) {
             throw new InvalidArgumentException();
         }
 
-        return $this->int < $value->getInt();
-    }
-
-    public function getInt(): int
-    {
-        return $this->int;
+        return $this->integer < $value->integer;
     }
 }

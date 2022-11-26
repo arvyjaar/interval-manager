@@ -10,33 +10,25 @@ use Jaar\IntervalManager\Model\ValueInterface;
 
 class DateTimeValue implements ValueInterface
 {
-    private DateTimeInterface $dateTime;
-
-    public function __construct(DateTimeInterface $dateTime)
+    public function __construct(public readonly DateTimeInterface $dateTime)
     {
-        $this->dateTime = $dateTime;
     }
 
     public function isGreaterThan(ValueInterface $value): bool
     {
-        if (!$value instanceof DateTimeValue) {
+        if (!$value instanceof self) {
             throw new InvalidArgumentException();
         }
 
-        return $this->dateTime > $value->getDateTime();
+        return $this->dateTime > $value->dateTime;
     }
 
     public function isLessThan(ValueInterface $value): bool
     {
-        if (!$value instanceof DateTimeValue) {
+        if (!$value instanceof self) {
             throw new InvalidArgumentException();
         }
 
-        return $this->dateTime < $value->getDateTime();
-    }
-
-    public function getDateTime(): DateTimeInterface
-    {
-        return $this->dateTime;
+        return $this->dateTime < $value->dateTime;
     }
 }

@@ -29,11 +29,11 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
-    - name: Run PHPStan analysis
-      run: vendor/bin/phpstan analyse --level 8 src/ test/
-    - name: Run PHP lint
-      run: php -l
     - name: Run PHP CS Fixer
       run: vendor/bin/php-cs-fixer fix src
+    - name: Run phpcs
+      run: vendor/bin/phpcs src/ test/ --report=code --colors --report-width=80 --standard=PSR2
+    - name: Run PHPStan analysis
+      run: vendor/bin/phpstan analyse --level 8 src/ test/
     - name: Run tests
       run: vendor/bin/phpunit test/

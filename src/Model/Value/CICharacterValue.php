@@ -9,37 +9,28 @@ use Jaar\IntervalManager\Model\ValueInterface;
 
 class CICharacterValue implements ValueInterface
 {
-    private string $char;
-
-    public function __construct(string $char)
+    public function __construct(private readonly string $character)
     {
-        if (preg_match('/^[A-Z]$/', $char) === false) {
+        if (preg_match('/^[A-Z]$/', $character) === false) {
             throw new InvalidArgumentException();
         }
-
-        $this->char = $char;
     }
 
     public function isGreaterThan(ValueInterface $value): bool
     {
-        if (!$value instanceof CICharacterValue) {
+        if (!$value instanceof self) {
             throw new InvalidArgumentException();
         }
 
-        return strtoupper($this->char) > strtoupper($value->getChar());
+        return strtoupper($this->character) > strtoupper($value->character);
     }
 
     public function isLessThan(ValueInterface $value): bool
     {
-        if (!$value instanceof CICharacterValue) {
+        if (!$value instanceof self) {
             throw new InvalidArgumentException();
         }
 
-        return strtoupper($this->char) < strtoupper($value->getChar());
-    }
-
-    public function getChar(): string
-    {
-        return $this->char;
+        return strtoupper($this->character) < strtoupper($value->character);
     }
 }

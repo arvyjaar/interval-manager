@@ -8,7 +8,7 @@ use Jaar\IntervalManager\Model\Interval;
 use Jaar\IntervalManager\Model\IntervalCollection;
 use Jaar\IntervalManager\Model\Point;
 
-class SubtractBinaryOperation extends AbstractBinaryOperation implements BinarySetOperationInterface
+class SubtractOperation extends AbstractOperation
 {
     public function execute(IntervalCollection $intervals1, IntervalCollection $intervals2): IntervalCollection
     {
@@ -22,10 +22,22 @@ class SubtractBinaryOperation extends AbstractBinaryOperation implements BinaryS
         $result                        = [];
 
         foreach ($intervalPoints as $k => $point) {
-            $nextPoint = $this->calculateNextPoint((int) $k, $intervalPoints);
-            $beginningOfSubtrahendInterval = $this->getBeginningOfSubtrahendInterval($point, $intervals2, $beginningOfSubtrahendInterval);
+            $nextPoint = $this->calculateNextPoint($k, $intervalPoints);
+            $beginningOfSubtrahendInterval = $this->getBeginningOfSubtrahendInterval(
+                $point,
+                $intervals2,
+                $beginningOfSubtrahendInterval
+            );
 
-            if ($this->isBeginningOfNewResultInterval($point, $nextPoint, $beginningOfResultInterval, $beginningOfSubtrahendInterval, $intervals1, $intervals2)) {
+            if ($this->isBeginningOfNewResultInterval(
+                $point,
+                $nextPoint,
+                $beginningOfResultInterval,
+                $beginningOfSubtrahendInterval,
+                $intervals1,
+                $intervals2
+            )
+            ) {
                 $beginningOfResultInterval = new Point(
                     $point->getValue(),
                     true,
@@ -35,11 +47,23 @@ class SubtractBinaryOperation extends AbstractBinaryOperation implements BinaryS
                 );
             }
 
-            if ($beginningOfResultInterval && $this->isTheEndOfResultInterval($point, $beginningOfResultInterval, $intervals1, $intervals2)) {
+            if ($beginningOfResultInterval && $this->isTheEndOfResultInterval(
+                $point,
+                $beginningOfResultInterval,
+                $intervals1,
+                $intervals2
+            )
+            ) {
                 $newInterval = new Interval(
                     $beginningOfResultInterval->getValue(),
                     $point->getValue(),
-                    $this->calculateIntervalInclusiveness($beginningOfResultInterval, $point, $nextPoint, $intervals1, $intervals2)
+                    $this->calculateIntervalInclusiveness(
+                        $beginningOfResultInterval,
+                        $point,
+                        $nextPoint,
+                        $intervals1,
+                        $intervals2
+                    )
                 );
 
                 $result[]                  = $newInterval;
@@ -59,9 +83,10 @@ class SubtractBinaryOperation extends AbstractBinaryOperation implements BinaryS
         IntervalCollection $subtrahendIntervalCollection
     ): bool {
         if ($beginningOfResultInterval === null && $nextPoint !== null
-            && self::isEqual($currentPoint->getValue(), $nextPoint->getValue())
             && $nextPoint->getCollection() === $subtrahendIntervalCollection
-            && $currentPoint->getCollection() === $minuendIntervalCollection) {
+            && $currentPoint->getCollection() === $minuendIntervalCollection
+            && self::isEqual($currentPoint->getValue(), $nextPoint->getValue())
+        ) {
             return $currentPoint->isInclusive() && $nextPoint->isInclusive() === false;
         }
 
@@ -82,11 +107,13 @@ class SubtractBinaryOperation extends AbstractBinaryOperation implements BinaryS
         IntervalCollection $intervals1,
         IntervalCollection $intervals2
     ): bool {
-        if ($beginningOfTheInterval !== null && $point->isEndPoint() && $point->getCollection() === $intervals1) {
+        if ($beginningOfTheInterval !== null && $point->getCollection() === $intervals1 && $point->isEndPoint()) {
             return true;
         }
 
-        return $point->isBeginningPoint() && $beginningOfTheInterval !== null && $point->getCollection() === $intervals2;
+        return $point->isBeginningPoint()
+            && $beginningOfTheInterval !== null
+            && $point->getCollection() === $intervals2;
     }
 
     private function isNewBeginningPointExclusive(Point $point, ?Point $nextPoint, IntervalCollection $intervals2): bool
@@ -166,8 +193,11 @@ class SubtractBinaryOperation extends AbstractBinaryOperation implements BinaryS
         return $beginningOfSubtrahendInterval;
     }
 
-    private function subtractedIntervalMakesEndExclusive(?Point $nextPoint, Point $endOfTheInterval, IntervalCollection $intervals2): bool
-    {
+    private function subtractedIntervalMakesEndExclusive(
+        ?Point $nextPoint,
+        Point $endOfTheInterval,
+        IntervalCollection $intervals2
+    ): bool {
         if ($nextPoint === null) {
             return false;
         }

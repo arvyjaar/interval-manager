@@ -7,7 +7,7 @@ namespace Jaar\IntervalManager\Operation;
 use InvalidArgumentException;
 use Jaar\IntervalManager\Model\IntervalCollection;
 
-interface BinarySetOperationInterface
+interface OperationOnCollectionsInterface
 {
     /**
      * @throws InvalidArgumentException

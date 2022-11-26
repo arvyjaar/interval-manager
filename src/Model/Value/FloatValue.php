@@ -9,33 +9,26 @@ use Jaar\IntervalManager\Model\ValueInterface;
 
 class FloatValue implements ValueInterface
 {
-    private float $float;
-
-    public function __construct(float $float)
+    public function __construct(private readonly float $float)
     {
-        $this->float = $float;
     }
 
     public function isGreaterThan(ValueInterface $value): bool
     {
-        if (!$value instanceof FloatValue) {
+        if (!$value instanceof self) {
             throw new InvalidArgumentException();
         }
 
-        return $this->float - $value->getFloat() > PHP_FLOAT_EPSILON;
+        return $this->float - $value->float > PHP_FLOAT_EPSILON;
     }
 
     public function isLessThan(ValueInterface $value): bool
     {
-        if (!$value instanceof FloatValue) {
+        if (!$value instanceof self) {
             throw new InvalidArgumentException();
         }
 
-        return abs($this->float - $value->getFloat()) > PHP_FLOAT_EPSILON && $this->float - $value->getFloat() < PHP_FLOAT_EPSILON;
-    }
-
-    public function getFloat(): float
-    {
-        return $this->float;
+        return abs($this->float - $value->float) > PHP_FLOAT_EPSILON
+            && $this->float - $value->float < PHP_FLOAT_EPSILON;
     }
 }

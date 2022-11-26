@@ -1,27 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jaar\IntervalManager\Model;
 
 class Interval
 {
+    /**
+     * inclusive both = 0 (operator |)
+     * inclusive none = 3 (operator &)
+     */
     public const INCLUSIVE_BEGINNING = 1;
     public const INCLUSIVE_END       = 2;
-    // inclusive both = 0 (operator |)
-    // inclusive none = 3 (operator &)
-
-    private ValueInterface $beginning;
-    private ValueInterface $end;
-
-    private int $inclusiveness;
 
     public function __construct(
-        ValueInterface $beginning,
-        ValueInterface $end,
-        int $inclusiveness = self::INCLUSIVE_BEGINNING | self::INCLUSIVE_END
+        private readonly ValueInterface $beginning,
+        private readonly ValueInterface $end,
+        private readonly int $inclusiveness = self::INCLUSIVE_BEGINNING | self::INCLUSIVE_END
     ) {
-        $this->beginning     = $beginning;
-        $this->end           = $end;
-        $this->inclusiveness = $inclusiveness;
     }
 
     public function getBeginning(): ValueInterface

@@ -8,7 +8,7 @@ use Jaar\IntervalManager\Model\Interval;
 use Jaar\IntervalManager\Model\IntervalCollection;
 use Jaar\IntervalManager\Model\Point;
 
-class UnionBinaryOperation extends AbstractBinaryOperation implements BinarySetOperationInterface
+class UnionOperation extends AbstractOperation
 {
     public function execute(
         IntervalCollection $intervals1,
@@ -32,6 +32,7 @@ class UnionBinaryOperation extends AbstractBinaryOperation implements BinarySetO
 
                 // Handling interval beginning inclusivity
                 $inclusivity = $this->determineInclusivity($intervalPoints, $k, false);
+
                 if ($inclusivity) {
                     $beginningOfTheInterval->setIsInclusive(true);
                 }
@@ -40,12 +41,14 @@ class UnionBinaryOperation extends AbstractBinaryOperation implements BinarySetO
             if ($started === $finished) {
                 // Handling stitching point
                 $inclusivity = $this->determineInclusivity($intervalPoints, $k, false);
+
                 if ($inclusivity) {
                     continue;
                 }
 
                 // Handling interval end inclusivity
                 $inclusivity = $this->determineInclusivity($intervalPoints, $k, true);
+
                 if ($inclusivity) {
                     $point->setIsInclusive(true);
                 }
@@ -53,7 +56,10 @@ class UnionBinaryOperation extends AbstractBinaryOperation implements BinarySetO
                 $newInterval = new Interval(
                     $beginningOfTheInterval->getValue(),
                     $point->getValue(),
-                    ($beginningOfTheInterval->isInclusive() ? Interval::INCLUSIVE_BEGINNING : 0) | ($point->isInclusive() ? Interval::INCLUSIVE_END : 0)
+                    ($beginningOfTheInterval->isInclusive()
+                        ? Interval::INCLUSIVE_BEGINNING : 0) | ($point->isInclusive()
+                        ? Interval::INCLUSIVE_END
+                        : 0)
                 );
                 $result[]               = $newInterval;
                 $beginningOfTheInterval = null;
@@ -64,7 +70,7 @@ class UnionBinaryOperation extends AbstractBinaryOperation implements BinarySetO
     }
 
     /**
-     * @param array<Point> $intervalPoints
+     * @param Point[] $intervalPoints
      */
     private function determineInclusivity(array $intervalPoints, int $k, bool $reverse): bool
     {
@@ -76,6 +82,7 @@ class UnionBinaryOperation extends AbstractBinaryOperation implements BinarySetO
             if ($intervalPoints[$key]->isInclusive() || $point->isInclusive()) {
                 return true;
             }
+
             ++$i;
             $key = $reverse ? $k - $i : $k + $i;
         }
