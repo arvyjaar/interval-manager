@@ -20,23 +20,26 @@ class SetValidator
         $intervalPoints = $this->collectIntervalPoints($collection);
 
         $beginningOfTheInterval = null;
-        $previousPoint          = null;
+        $previousPoint = null;
 
         foreach ($intervalPoints as $point) {
             if ($beginningOfTheInterval !== null && $beginningOfTheInterval->getInterval() !== $point->getInterval()) {
                 throw new InvalidArgumentException('Input intervals overlap!');
             }
 
-            if ($previousPoint !== null && self::isEqual($previousPoint->getValue(), $point->getValue())
-                && $previousPoint->isInclusive() && $point->isInclusive()) {
+            if ($previousPoint !== null
+                && $previousPoint->isInclusive()
+                && $point->isInclusive()
+                && self::isEqual($previousPoint->getValue(), $point->getValue())
+            ) {
                 throw new InvalidArgumentException('Input intervals overlap!');
             }
 
             $previousPoint = $point;
 
-            if ($point->isBeginningPoint() && $beginningOfTheInterval === null) {
+            if ($beginningOfTheInterval === null && $point->isBeginningPoint()) {
                 $beginningOfTheInterval = $point;
-            } elseif ($point->isEndPoint() && $beginningOfTheInterval !== null) {
+            } elseif ($beginningOfTheInterval !== null && $point->isEndPoint()) {
                 $beginningOfTheInterval = null;
             }
         }

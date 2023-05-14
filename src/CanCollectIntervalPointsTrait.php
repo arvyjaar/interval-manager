@@ -10,8 +10,7 @@ use Jaar\IntervalManager\Model\Point;
 trait CanCollectIntervalPointsTrait
 {
     /**
-     * @param IntervalCollection ...$dateIntervalCollections
-     * @return array<Point>
+     * @return array<int, Point>
      */
     protected function collectIntervalPoints(IntervalCollection ...$dateIntervalCollections): array
     {

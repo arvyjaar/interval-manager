@@ -12,7 +12,7 @@ use Jaar\IntervalManager\Model\Value\CICharacterValue;
 use Jaar\IntervalManager\Model\Value\DateTimeValue;
 use Jaar\IntervalManager\Model\Value\FloatValue;
 use Jaar\IntervalManager\Model\Value\IntegerValue;
-use Jaar\IntervalManager\Operation\SubtractBinaryOperation;
+use Jaar\IntervalManager\Operation\SubtractOperation;
 use Jaar\IntervalManager\SetValidator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -20,14 +20,14 @@ use PHPUnit\Framework\TestCase;
 class SubtractOperationTest extends TestCase
 {
     protected MockObject $validator;
-    protected SubtractBinaryOperation $subtractOperation;
+    protected SubtractOperation $subtractOperation;
 
     public function setUp(): void
     {
         parent::setUp();
 
         $this->validator = $this->getMockBuilder(SetValidator::class)->getMock();
-        $this->subtractOperation = new SubtractBinaryOperation($this->validator);
+        $this->subtractOperation = new SubtractOperation($this->validator);
     }
 
     /**
@@ -71,7 +71,10 @@ class SubtractOperationTest extends TestCase
     {
         $collection1 = new IntervalCollection();
         $collection2 = new IntervalCollection(
-            new Interval(new DateTimeValue(new DateTime('2021-12-08 14:00:00')), new DateTimeValue(new DateTime('2021-12-08 18:00:00')))
+            new Interval(
+                new DateTimeValue(new DateTime('2021-12-08 14:00:00')),
+                new DateTimeValue(new DateTime('2021-12-08 18:00:00'))
+            )
         );
 
         $expectedResult = new IntervalCollection();
@@ -327,7 +330,7 @@ class SubtractOperationTest extends TestCase
     /**
      * @return iterable<IntervalCollection[]>
      */
-    public function inclusivityWorksWellProvider(): iterable
+    public static function inclusivityWorksWellProvider(): iterable
     {
         /*
          * X---------X
@@ -499,7 +502,7 @@ class SubtractOperationTest extends TestCase
     /**
      * @return iterable<IntervalCollection[]>
      */
-    public function subtractedIntervalIsLargerProvider(): iterable
+    public static function subtractedIntervalIsLargerProvider(): iterable
     {
         /*
          *    0-----0
@@ -620,7 +623,7 @@ class SubtractOperationTest extends TestCase
     /**
      * @return iterable<IntervalCollection[]>
      */
-    public function minuendIntervalOverlapsWithSubtrahendProvider(): iterable
+    public static function minuendIntervalOverlapsWithSubtrahendProvider(): iterable
     {
         /*
          * 0----------0
@@ -857,7 +860,7 @@ class SubtractOperationTest extends TestCase
     /**
      * @return iterable<IntervalCollection[]>
      */
-    public function subtractedIntervalIsSmallerProvider(): iterable
+    public static function subtractedIntervalIsSmallerProvider(): iterable
     {
         /*
          * 0--------------------0

@@ -39,7 +39,7 @@ class SetValidatorTest extends TestCase
     /**
      * @return array<IntervalCollection[]>
      */
-    public function validationKicksInIfInputIntervalsOverlapProvider(): iterable
+    public static function validationKicksInIfInputIntervalsOverlapProvider(): iterable
     {
         $collection = new IntervalCollection(
             new Interval(
